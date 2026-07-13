@@ -1,0 +1,18 @@
+# Local Hermes runtime + secrets (do not commit)
+.hermes/
+.env
+.env.*
+*.pem
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Caches / logs
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+*.log
