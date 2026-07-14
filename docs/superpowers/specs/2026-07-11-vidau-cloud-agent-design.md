@@ -8,7 +8,6 @@
 
 **关联文档：**
 
-- [Mobile Link 一期](./2026-07-10-vidau-mobile-link-phase1-design.md) — 手机连电脑执行（**并行产品轨，本方案不依赖**）
 - [OpenVidAU SSO → Cloud LLM Key](./2026-07-11-vidau-openvidau-sso-design.md) — 浏览器 SSO + 计划密钥注入
 - [媒体生成实时进度](./2026-07-11-cloud-agent-media-progress-design.md) — Creative 输出媒体 UX
 - [桌面 Expert 对齐](./2026-07-13-cloud-agent-desktop-experts-parity-design.md) — Catalog 四 Expert
@@ -24,27 +23,16 @@
 
 让用户在手机上选择 Skill / Expert，由**云端**完成与桌面 Vidau Agent 对等的任务执行：加载技能说明书、调用远程 MCP 业务能力，并在需要时于隔离沙箱中使用 file / terminal / browser / code_execution，流式返回进度与结果。
 
-**不要求**用户电脑在线；**不经**桌面 Agent 转发。
-
 ### 1.2 成功标准
 
 1. 用户登录后可浏览并启用 Skill / Expert（对齐桌面 Experts 卡片信息：Skills、Tools、MCP、状态）。
 2. 新会话可选择 Expert 或 Skill；选择作用于该云端会话。
-3. 纯远程 MCP 型任务（如 TikTok Ads / Creative 主路径）可在**不分配沙箱**时完成。
+3. 纯远程 MCP 型任务（如 Creative 主路径 / TikTok Ads）可在**不分配沙箱**时完成。
 4. 需要本机类能力的任务可自动或按 Expert 策略分配沙箱，并完成与桌面对等的工具调用。
 5. 手机端流式展示 assistant / tool progress / done；**会话历史落在云端并可回看、可继续聊**。
 6. 多用户并发时会话隔离（一活跃沙箱会话一 VM）；满载时有明确排队或降级，不串数据。
 7. （P0 增补）Composer 可 ATTACH 相册图/视频/URL；Creative 参考素材由服务端桥接，App 不持 MCP Key。
 8. （P0 增补）OpenVidAU SSO 登录后 LLM Key 仅留在 Cloud Agent 主机，Expert tool-calling 可用。
-
-### 1.3 明确不做（本阶段）
-
-- 手机连接用户电脑执行（见 Mobile Link；本方案不依赖）
-- 社区不可信 Skill 市场的完整治理（可预留，首发以官方 Skill/Expert 为主）
-- 桌面 GUI 与云端会话的双向实时同屏（可后续）
-- 语音、推送、多 Expert 同会话深度编排（可后续）
-- Social Expert 云端 browser / 平台登录发布（卡片可上架 `coming_soon`）
-- 手机本地会话权威库、会话标题编辑、全文搜索（见历史设计 P1）
 
 ---
 
@@ -470,15 +458,3 @@ flutter run --dart-define=EXECUTION_MODE=cloud --dart-define=CLOUD_HOST=<LAN_IP>
 - 实现计划：`docs/superpowers/plans/2026-07-14-mobile-cloud-attach.md`、`docs/superpowers/plans/2026-07-14-mobile-cloud-session-history.md`  
 
 ---
-
-## 附录 A. 给运维的自建咨询提纲（可转发）
-
-**目标一句话：** 云端 Agent 需要「一会话一隔离沙箱」跑 file/terminal/browser；请评估自建 Firecracker 类方案的可行性、周期与成本。
-
-请回复：
-
-1. 现网是否支持 KVM / 裸金属 / 嵌套虚拟化？  
-2. 峰值并发 20 / 50 / 100，单台 2c4g，各需多少宿主机与月成本区间？  
-3. 安全是否允许多租户跑 Agent 生成代码？沙箱默认能否禁访问内网？  
-4. 是否已有 create/pause/resume/destroy 类平台？SLA（创建 P99）目标能否 &lt; 3s（预热）？  
-5. 结论：可行 / 有条件 / 不可行；建议自建、先托管后自建、或只托管。  

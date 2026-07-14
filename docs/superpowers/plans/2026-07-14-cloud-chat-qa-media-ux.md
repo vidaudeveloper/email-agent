@@ -12,6 +12,8 @@
 
 **Spec:** `docs/superpowers/specs/2026-07-14-cloud-chat-qa-media-ux-design.md`
 
+**Status:** Implemented in worktree commit `d0bd089` (2026-07-14). Tests: `flutter test test/cloud_media_events_test.dart test/cloud_chat_controller_media_test.dart` PASS.
+
 ---
 
 ## File map
@@ -35,7 +37,7 @@
 - Modify: `.worktrees/cloud-agent-p0/lib/cloud/models/cloud_models.dart`
 - Create: `.worktrees/cloud-agent-p0/test/cloud_media_events_test.dart`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 ```dart
 import 'package:flutter_test/flutter_test.dart';
