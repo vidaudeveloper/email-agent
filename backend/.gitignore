@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+.env
+data/sessions.db
+data/sessions/
+data/sandboxes/
+data/openvidau.env

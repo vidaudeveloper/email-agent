@@ -1,0 +1,57 @@
+{
+  "experts": {
+    "vidau-creative-agent-oneclick": {
+      "skills": [
+        "creative-job-runner",
+        "creative-platform",
+        "creative-narrative-router",
+        "creative-seedance2-prompt",
+        "creative-gpt-image2-prompt",
+        "creative-direct",
+        "creative-script2film",
+        "creative-script2film-keyframes",
+        "creative-batch-orchestrator",
+        "trend-viral-short",
+        "product-url-to-video",
+        "creative-agent-skill"
+      ],
+      "mcp_servers": [
+        {
+          "name": "creative-agent",
+          "url": "https://creative.vidau.ai/mcp"
+        }
+      ]
+    },
+    "tiktok-ads-agent": {
+      "skills": [
+        "tiktok-ai-agent-agent-knowledge",
+        "tiktok-ads-skills"
+      ],
+      "mcp_servers": [
+        {
+          "name": "tiktok-ads-agent",
+          "url": "https://tiktok.vidau.ai/api/mcp/sse?apiKey=<YOUR_API_KEY>"
+        }
+      ]
+    },
+    "vidau-geo-agent": {
+      "skills": [
+        "vidau-geo-mcp-setup",
+        "vidau-geo-quick-audit",
+        "vidau-geo-full-audit",
+        "vidau-geo-brand-insights",
+        "vidau-geo-compose",
+        "vidau-geo-publish",
+        "vidau-geo-write-draft",
+        "vidau-geo-automation",
+        "geo-agent-skills"
+      ],
+      "mcp_servers": [
+        {
+          "name": "vidau-geo",
+          "url": "https://geo.vidau.ai/mcp"
+        }
+      ]
+    }
+  }
+}
