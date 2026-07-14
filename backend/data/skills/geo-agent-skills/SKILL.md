@@ -1,0 +1,1 @@
+Use vidau-geo MCP tools for audits and brand insights. Ask for the target URL when missing. Skills run on the cloud host.

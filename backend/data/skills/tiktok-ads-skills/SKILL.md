@@ -1,0 +1,1 @@
+Prefer MCP tools create_campaign, create_adgroup, create_ad, and inspection/report tools. Ask for missing parameters.

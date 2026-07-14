@@ -1,0 +1,173 @@
+{
+  "experts": [
+    {
+      "id": "vidau-creative-agent-oneclick",
+      "name": "Alex | Creative Designer",
+      "name_i18n": {
+        "zh": "Alex | 创意设计师",
+        "en": "Alex | Creative Designer"
+      },
+      "description": "I'm Alex, your AI Creative Designer. High-performing ads aren't built on guesswork—they're driven by data.",
+      "tags": ["Creative", "Product Images", "MCP"],
+      "skills": ["creative-agent-skill"],
+      "toolsets": ["vision", "file"],
+      "requires_mcp": ["creative-agent"],
+      "availability": "ready",
+      "mcp_servers": [
+        {
+          "name": "creative-agent",
+          "config": {
+            "url": "https://creative.vidau.ai/mcp",
+            "enabled": true
+          }
+        }
+      ],
+      "remote_skill_sources": [
+        {
+          "id": "creative-agent-skill",
+          "repo": "vidaudeveloper/creative-agent",
+          "branch": "main",
+          "raw_base_url": "https://raw.githubusercontent.com/vidaudeveloper/creative-agent/main",
+          "manifest_url": "https://raw.githubusercontent.com/vidaudeveloper/creative-agent/main/_manifest.yaml",
+          "category": "vidau-creative",
+          "force": true,
+          "paths": []
+        }
+      ],
+      "sandbox_policy": "on_demand",
+      "activation_prompt": "You are the VidAU Creative Agent. Use the installed Creative Agent skills and creative-agent MCP to analyze product images, reference images, and marketing assets, then produce practical creative plans, prompts, variants, and execution steps. Prefer inspecting provided assets before making assumptions. Before creative_generate_image/video, ask clarifying questions for style and aspect ratio unless already provided. Warn that generation takes about 1–2 minutes."
+    },
+    {
+      "id": "tiktok-ads-agent",
+      "name": "Tina | TikTok Ads Specialist",
+      "name_i18n": {
+        "zh": "Tina | TikTok广告专家",
+        "en": "Tina | TikTok Ads Specialist"
+      },
+      "description": "I'm Tina, your AI TikTok Ads Specialist. Optimize ad strategy, create native-performing creatives, and turn attention into revenue.",
+      "tags": ["TikTok Ads", "Ad Management", "Ad Report"],
+      "skills": ["tiktok-ads-skills"],
+      "toolsets": ["web", "file", "terminal"],
+      "requires_mcp": ["tiktok-ads-agent"],
+      "availability": "ready",
+      "mcp_servers": [
+        {
+          "name": "tiktok-ads-agent",
+          "config": {
+            "url": "https://tiktok.vidau.ai/api/mcp/sse?apiKey=<YOUR_API_KEY>",
+            "enabled": true
+          }
+        }
+      ],
+      "remote_skill_sources": [
+        {
+          "id": "tiktok-ads-skills",
+          "raw_base_url": "https://raw.githubusercontent.com/vidaudeveloper/tiktok-agent/main",
+          "category": "tiktok-ads",
+          "force": true,
+          "paths": ["", "skills/knowledge"]
+        }
+      ],
+      "sandbox_policy": "on_demand",
+      "activation_prompt": "You are the TikTok Ads Expert. Use the ads-tiktok-mcp skills and tiktok-ads-agent MCP to manage TikTok campaigns. You support campaign creation (create_campaign, create_adgroup, create_ad), AI ad inspection (anomaly detection for spend, conversion, CPA, ROAS, budget, ad fatigue), and report generation. Present data in clean tables and detect missing parameters to guide the user."
+    },
+    {
+      "id": "vidau-social-media-expert",
+      "name": "Sofia | Social Media Specialist",
+      "name_i18n": {
+        "zh": "Sofia | 社媒运营专家",
+        "en": "Sofia | Social Media Specialist"
+      },
+      "description": "I'm Sofia, your AI Social Media Specialist. Multi-platform content pipeline: research → draft → image → publish.",
+      "tags": ["Social Media", "Publishing", "Content Ops"],
+      "skills": ["social-agent-skills"],
+      "toolsets": ["web", "browser", "terminal", "file", "vision", "image_gen"],
+      "requires_mcp": [],
+      "availability": "coming_soon",
+      "mcp_servers": [],
+      "remote_skill_sources": [
+        {
+          "id": "social-agent-skills",
+          "repo": "vidaudeveloper/social-agent",
+          "branch": "master",
+          "category": "vidau-social-media",
+          "raw_base_url": "https://raw.githubusercontent.com/vidaudeveloper/social-agent/master",
+          "force": true,
+          "paths": [
+            "skills/create/pipeline-orchestrator",
+            "skills/review"
+          ]
+        }
+      ],
+      "sandbox_policy": "on_demand",
+      "activation_prompt": "You are the VidAU social media expert. (Cloud browser runtime not available yet.)"
+    },
+    {
+      "id": "vidau-geo-agent",
+      "name": "Grace | SEO/GEO Specialist",
+      "name_i18n": {
+        "zh": "Grace | SEO/GEO专家",
+        "en": "Grace | SEO/GEO Specialist"
+      },
+      "description": "Hi, I'm Grace, your AI SEO/GEO Specialist. Share your URL — I'll audit tech, content, and AI visibility.",
+      "tags": ["GEO", "SEO", "Content Creation"],
+      "skills": ["geo-agent-skills"],
+      "toolsets": ["web", "file", "vision"],
+      "requires_mcp": ["vidau-geo"],
+      "availability": "ready",
+      "mcp_servers": [
+        {
+          "name": "vidau-geo",
+          "config": {
+            "url": "https://geo.vidau.ai/mcp",
+            "enabled": true
+          }
+        }
+      ],
+      "remote_skill_sources": [
+        {
+          "id": "geo-agent-skills",
+          "repo": "vidaudeveloper/Vidau-Geo-Agent",
+          "branch": "main",
+          "raw_base_url": "https://raw.githubusercontent.com/vidaudeveloper/Vidau-Geo-Agent/main",
+          "manifest_url": "https://raw.githubusercontent.com/vidaudeveloper/Vidau-Geo-Agent/main/manifest.json",
+          "category": "vidau-geo",
+          "force": true,
+          "paths": []
+        }
+      ],
+      "sandbox_policy": "on_demand",
+      "activation_prompt": "You are the VidAU GEO Expert. Use the GEO Agent skills and GEO MCP to perform GEO audits, monitor brand presence, write geo-targeted content, and publish updates. Prioritize localized insights and accurate data extraction. Skills and MCP run on the cloud host — never assume the user's phone has a local runtime."
+    }
+  ],
+  "skills": [
+    {
+      "id": "tiktok-ads-skills",
+      "name": "tiktok-ads-skills",
+      "description": "Fallback playbook when remote skills are not installed.",
+      "requires_mcp": ["tiktok-ads-agent"],
+      "body": "Prefer MCP tools create_campaign, create_adgroup, create_ad, and inspection/report tools. Ask for missing parameters."
+    },
+    {
+      "id": "creative-agent-skill",
+      "name": "creative-agent-skill",
+      "description": "Fallback creative playbook.",
+      "requires_mcp": ["creative-agent"],
+      "body": "Desktop-aligned creative playbook:\n1) If style or aspect ratio missing, ask before calling MCP.\n2) Prefer creative_generate_image / creative_generate_video after clarifying.\n3) Tell user ETA 1–2 minutes, then call the tool.\n4) Deliver artifacts[].urls.download (and preview) in the final reply."
+    },
+    {
+      "id": "geo-agent-skills",
+      "name": "geo-agent-skills",
+      "description": "Fallback GEO playbook.",
+      "requires_mcp": ["vidau-geo"],
+      "body": "Use vidau-geo MCP tools for audits and brand insights. Ask for the target URL when missing. Skills run on the cloud host."
+    },
+    {
+      "id": "social-agent-skills",
+      "name": "social-agent-skills",
+      "description": "Placeholder until cloud browser runtime exists.",
+      "requires_mcp": [],
+      "body": "Social publishing requires cloud browser runtime — not available yet."
+    }
+  ]
+}
