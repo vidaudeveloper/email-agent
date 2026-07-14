@@ -1,0 +1,11 @@
+services:
+  cloud-agent:
+    build: .
+    ports:
+      - "8787:8787"
+    env_file:
+      - .env
+    volumes:
+      # Host data/ ships with catalog + skills + samples; runtime writes stay here.
+      - ./data:/app/data
+    restart: unless-stopped
