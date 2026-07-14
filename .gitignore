@@ -1,11 +1,14 @@
 # Git worktrees (local isolated workspaces)
 .worktrees/
 
-# Cloud agent local runtime
-cloud_agent/data/sessions.db
-cloud_agent/data/sandboxes/
-cloud_agent/**/__pycache__/
-cloud_agent/.venv/
+# Cloud Agent (backend/) local runtime
+backend/data/sessions.db
+backend/data/sandboxes/
+backend/data/sessions/
+backend/data/openvidau.env
+backend/**/__pycache__/
+backend/.venv/
+backend/.env
 
 # Miscellaneous
 *.class

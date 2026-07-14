@@ -61,7 +61,7 @@ sequenceDiagram
   CA->>SSO: chat.completions + MCP (bootstrap api_key)
 ```
 
-**Trust boundary:** Phone only holds Cloud Agent session token. OpenVidAU refresh token + API key live under `cloud_agent/data/` on the Mac (or later server).
+**Trust boundary:** Phone only holds Cloud Agent session token. OpenVidAU refresh token + API key live under `backend/data/` on the Mac (or later server).
 
 ## 4. API (Cloud Agent)
 
@@ -123,12 +123,12 @@ Link mode login unchanged.
 
 **Backend (worktree `cloud-agent-p0`):**
 
-- `cloud_agent/app/openvidau_sso.py` — ticket, poll, refresh, bootstrap client  
-- `cloud_agent/app/account_store.py` — persist auth + env + session tokens  
-- `cloud_agent/app/llm_config.py` — load `data/openvidau.env`  
-- `cloud_agent/app/main.py` — auth routes; tighten `verify_token`  
-- `cloud_agent/app/auth.py` — session validation  
-- Tests under `cloud_agent/tests/test_openvidau_sso.py`
+- `backend/app/openvidau_sso.py` — ticket, poll, refresh, bootstrap client
+- `backend/app/account_store.py` — persist auth + env + session tokens
+- `backend/app/llm_config.py` — load `data/openvidau.env`
+- `backend/app/main.py` — auth routes; tighten `verify_token`
+- `backend/app/auth.py` — session validation
+- Tests under `backend/tests/test_openvidau_sso.py`
 
 **Flutter:**
 
@@ -137,7 +137,7 @@ Link mode login unchanged.
 - `url_launcher` dependency if missing  
 - Wire token into `CloudClient` / providers
 
-**Docs:** update `cloud_agent/README.md` SSO section.
+**Docs:** update `backend/README.md` SSO section.
 
 ## 9. Risks
 

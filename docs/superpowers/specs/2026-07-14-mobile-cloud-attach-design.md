@@ -265,13 +265,13 @@ Chip 点击：把选项文本作为一条用户消息发送（或填入输入框
 
 ## 8. 实现草图（文件）
 
-**Backend（`cloud-agent-p0`）：**
+**Backend（`backend/`）：**
 
-- `cloud_agent/app/attachments.py` — 存储与 CRUD  
-- `cloud_agent/app/main.py` — attachments 路由  
-- `cloud_agent/app/ws.py` — `chat.send` 解析 `attachment_ids`  
-- `cloud_agent/app/agent_loop.py`（或邻接模块）— Creative 桥接  
-- tests：`test_attachments.py`
+- `backend/app/attachments.py` — 存储与 CRUD  
+- `backend/app/main.py` — attachments 路由  
+- `backend/app/ws.py` — `chat.send` 解析 `attachment_ids`  
+- `backend/app/agent_loop.py`（或邻接模块）— Creative 桥接  
+- tests：`backend/tests/test_attachments.py`
 
 **Flutter：**
 

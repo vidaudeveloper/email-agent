@@ -98,7 +98,7 @@ def test_delete_session_removes_messages(tmp_path: Path, monkeypatch):
 - [ ] **Step 2: Run tests — expect FAIL**
 
 ```bash
-cd .worktrees/cloud-agent-p0/cloud_agent
+cd backend
 PYTHONPATH=. .venv/bin/pytest tests/test_session_history.py -v
 ```
 

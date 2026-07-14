@@ -1,4 +1,4 @@
-"""Install remote expert skills into cloud_agent/data/skills/ (cloud host only)."""
+"""Install remote expert skills into backend/data/skills/ (cloud host only)."""
 
 from __future__ import annotations
 

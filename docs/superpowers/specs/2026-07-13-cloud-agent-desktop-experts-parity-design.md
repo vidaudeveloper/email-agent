@@ -31,7 +31,7 @@
 
 | 能力 | 位置 |
 |---|---|
-| Skill 文件 | 服务器 `cloud_agent/data/skills/` |
+| Skill 文件 | 服务器 `backend/data/skills/` |
 | MCP | 云端进程 → 远程 MCP |
 | Sandbox | 云端本机磁盘 |
 | 手机 | 仅 UI + WS |

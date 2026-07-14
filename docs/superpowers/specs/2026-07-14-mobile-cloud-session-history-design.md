@@ -202,9 +202,9 @@ SQLite 无列则 `ALTER`；`init_db` 做幂等迁移。不引入桌面 FTS / tit
 
 | 文件 | 职责 |
 |------|------|
-| `cloud_agent/app/sessions.py` | `list_sessions` / `delete_session` / `updated_at` 迁移 |
-| `cloud_agent/app/main.py` | 三个 HTTP 路由 |
-| `cloud_agent/tests/test_session_history.py` | 列表、消息、删除、权限/404 |
+| `backend/app/sessions.py` | `list_sessions` / `delete_session` / `updated_at` 迁移 |
+| `backend/app/main.py` | 三个 HTTP 路由 |
+| `backend/tests/test_session_history.py` | 列表、消息、删除、权限/404 |
 | `lib/cloud/cloud_api_client.dart` / `cloud_client.dart` | list / messages / delete |
 | `lib/cloud/models/cloud_models.dart` | `CloudSessionSummary` 等 |
 | `lib/state/cloud_chat_controller.dart` | start 时拉历史 |
@@ -226,7 +226,7 @@ SQLite 无列则 `ALTER`；`init_db` 做幂等迁移。不引入桌面 FTS / tit
 
 | 桌面 | Cloud P0 |
 |------|----------|
-| `~/.vidau/state.db` | `cloud_agent/data/sessions.db` |
+| `~/.vidau/state.db` | `backend/data/sessions.db` |
 | Sessions 页 | Experts → 历史会话 |
 | 打开继续聊 | 同 |
 | title / FTS / lineage | 不做 |

@@ -84,7 +84,7 @@ def test_delete(tmp_path: Path):
 - [ ] **Step 2: Run tests — expect FAIL**
 
 ```bash
-cd .worktrees/cloud-agent-p0/cloud_agent
+cd backend
 PYTHONPATH=. .venv/bin/pytest tests/test_attachments.py -v
 ```
 
@@ -440,7 +440,7 @@ git commit -m "feat(mobile): inline attachment bubbles and clarify chips"
 - [ ] **Step 1: Backend**
 
 ```bash
-cd .worktrees/cloud-agent-p0/cloud_agent
+cd backend
 PYTHONPATH=. .venv/bin/pytest tests/test_attachments.py tests/test_creative_bridge.py -v
 PYTHONPATH=. .venv/bin/pytest tests/ -q
 ```

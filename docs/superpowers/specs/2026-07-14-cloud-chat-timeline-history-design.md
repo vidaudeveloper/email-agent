@@ -218,9 +218,9 @@
 
 **Backend**
 
-- `cloud_agent/app/sessions.py` — 表迁移、`add_step` / `upsert_media`、timeline  
-- `cloud_agent/app/agent_loop.py` / `ws.py` / `media_tracker.py` — 事件落库  
-- `cloud_agent/app/main.py` — timeline 路由  
+- `backend/app/sessions.py` — 表迁移、`add_step` / `upsert_media`、timeline
+- `backend/app/agent_loop.py` / `ws.py` / `media_tracker.py` — 事件落库
+- `backend/app/main.py` — timeline 路由
 - tests：`test_timeline.py`
 
 **Flutter**
