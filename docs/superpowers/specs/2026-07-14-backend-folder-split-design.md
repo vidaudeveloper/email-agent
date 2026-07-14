@@ -173,8 +173,8 @@ curl http://localhost:8787/health
 
 ## 8. 验收清单
 
-- [ ] 主仓 `backend/` 可独立 `docker compose up` 或 `run_prod.sh` 启动
-- [ ] `/health` 返回成功且含预期字段（如 mcp/llm 状态）
-- [ ] git 状态中无 `.venv`、无 `openvidau.env`、无真实 `sessions/` 附件
-- [ ] worktree 中不再存在 `cloud_agent/` 源码树
-- [ ] 文档入口已指向 `backend/`
+- [x] 主仓 `backend/` 可独立 `docker compose up` 或 `run_prod.sh` 启动
+- [x] `/health` 返回成功且含预期字段（如 mcp/llm 状态）（`pytest tests/test_health.py` 通过）
+- [x] git 状态中无 `.venv`、无 `openvidau.env`、无真实 `sessions/` 附件
+- [x] worktree 中不再存在 `cloud_agent/` 源码树
+- [x] 文档入口已指向 `backend/`
