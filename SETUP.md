@@ -1,7 +1,12 @@
 # Email Agent (Hermes Skills) — One-Click Setup
 
 仓库：https://github.com/vidaudeveloper/email-agent  
-目标：通过 SEND skills + `scripts/connectors/resend.py` **安全发信**（默认 dry-run，`--live` 才真发）。
+目标：通过 SEND skills + `scripts/connectors/send_mail.py` **安全发信**（默认 dry-run，`--live` 才真发）。
+
+发信优先级：
+
+1. **VidAU Messaging Email（个人 SMTP）** — 桌面已配置则直接用，无需 Resend
+2. **Resend** — 未配置个人邮箱时用 `RESEND_API_KEY` + 已验证域（如 `mail.vidau.ai`）
 
 > 不要用 `raw.githubusercontent.com` 拉 skill（易 429）。优先 shallow clone + 本地安装。
 
@@ -51,13 +56,22 @@ bash hermes/install.sh
 VIDAU_API_KEY=tw-你的密钥
 OPENAI_BASE_URL=https://open.vidau.ai/v1
 OPENAI_API_KEY=tw-你的密钥
-RESEND_API_KEY=re_你的密钥
+
+# 二选一（send_mail.py 优先用 SMTP）
+# A) 个人邮箱 — 也可不写，会自动读 %LOCALAPPDATA%/vidau/.env（桌面 Messaging → Email）
+# EMAIL_ADDRESS=you@gmail.com
+# EMAIL_PASSWORD=应用专用密码
+# EMAIL_SMTP_HOST=smtp.gmail.com
+# EMAIL_SMTP_PORT=587
+
+# B) Resend（无个人 SMTP 时）
+# RESEND_API_KEY=re_你的密钥
 ```
 
 `hermes/run.sh` 会自动导出：
 
 - `HERMES_HOME=$REPO/.hermes`
-- `EMAIL_AGENT_ROOT=$REPO`（skills 里所有 `resend.py` 命令依赖此变量）
+- `EMAIL_AGENT_ROOT=$REPO`（skills 里所有发信命令依赖此变量）
 
 启动：
 
@@ -78,27 +92,35 @@ bash hermes/enable-resend.sh
 
 1. 收件人已在 `memory/consent/` 登记（`/consent-registry`）
 2. `/email-quality-auditor` 得到 **SHIP**（非 FIX/BLOCK）
-3. 执行连接器（默认 **dry-run**）：
+3. 执行统一连接器（默认 **dry-run**）：
 
 ```bash
 set -a && source .hermes/.env && set +a
 export EMAIL_AGENT_ROOT="$(pwd)"
 
-python3 "$EMAIL_AGENT_ROOT/scripts/connectors/resend.py" domains
+# 看将用哪条通道
+python3 "$EMAIL_AGENT_ROOT/scripts/connectors/send_mail.py" status
 
-python3 "$EMAIL_AGENT_ROOT/scripts/connectors/resend.py" send \
-  --from "you@mail.vidau.ai" \
-  --to "recipient@example.com" \
+python3 "$EMAIL_AGENT_ROOT/scripts/connectors/send_mail.py" send \
+  --to "recipient@real-domain.com" \
   --subject "主题" \
   --html path/to/build.html
 # 确认 dry-run 输出无误且 EQS=SHIP 后，再加 --live
 ```
 
+强制走某一通道：
+
+```bash
+python3 "$EMAIL_AGENT_ROOT/scripts/connectors/send_mail.py" send --transport smtp …   # 个人 SMTP
+python3 "$EMAIL_AGENT_ROOT/scripts/connectors/send_mail.py" send --transport resend \
+  --from "you@mail.vidau.ai" …
+```
+
 硬规则：
 
-- **禁止** `smtplib` / 裸 SMTP / `himalaya`
+- **禁止** 临时拼 `smtplib` / 裸 SMTP / `himalaya`（须走 `send_mail.py` / `user_smtp.py` / `resend.py`）
 - **禁止** 占位收件人 `*@example.com`
-- 发件域须已在 Resend 验证（如 `mail.vidau.ai`，不要用未验证的裸 `vidau.ai`）
+- 走 Resend 时发件域须已验证（如 `mail.vidau.ai`，不要用未验证的裸 `vidau.ai`）
 
 ---
 
@@ -117,14 +139,17 @@ bash hermes/run.sh chat
 ## 5. 验证
 
 ```bash
+# 个人 SMTP（桌面已配置 Messaging Email 即可）
+python3 scripts/connectors/send_mail.py status
+# 期望 preferred: "smtp"
+
 # Tier 1 — 无需 Key
 python3 scripts/connectors/doh.py auth mail.vidau.ai
 
-# Tier 2 — 需 RESEND_API_KEY
+# Tier 2 — 仅当走 Resend 时需 RESEND_API_KEY
 set -a && source .hermes/.env && set +a
 python3 scripts/connectors/resend.py domains
 bash scripts/verify-deliver-flow.sh --domain mail.vidau.ai
-# 期望末行 Result: READY
 ```
 
 ---
@@ -134,8 +159,8 @@ bash scripts/verify-deliver-flow.sh --domain mail.vidau.ai
 ```
 帮我写一封 Meta 智能投放推广邮件（只要文案，先不要发送）
 对这封邮件做 EQS 审计，目标 promotional
-域名 mail.vidau.ai，收件人已在 consent 登记，可以 dry-run 发一封测试吗？
-查一下 Resend 域名认证状态
+我已在 Messaging 配好个人邮箱，收件人已在 consent 登记，可以 dry-run 发一封测试吗？
+查一下当前发信通道（send_mail.py status）
 ```
 
 ---
@@ -145,6 +170,8 @@ bash scripts/verify-deliver-flow.sh --domain mail.vidau.ai
 | 现象 | 处理 |
 |------|------|
 | skill 里路径指向 `/Users/kean/...` | 更新到最新 `main`；或跑 `python3 scripts/fix-skill-paths.py` |
-| `RESEND_API_KEY` 未设置 | 写入 `.hermes/.env` 后重启 `run.sh` |
-| dry-run 正常但 `--live` 失败 | 检查发件域是否在 Resend 已 verified；看 `resend.py domains` |
+| `preferred: none` | 在 VidAU → Messaging → Email 保存，或设 `RESEND_API_KEY` |
+| `RESEND_API_KEY` 未设置且无 SMTP | 二选一配置后重启 `run.sh` |
+| dry-run 正常但 SMTP `--live` 失败 | 检查应用专用密码 / SMTP 主机端口；Gmail 需开启 2FA + App Password |
+| dry-run 正常但 Resend `--live` 失败 | 检查发件域是否已 verified；看 `resend.py domains` |
 | `EMAIL_AGENT_ROOT` 空 | 用 `bash hermes/run.sh`，或手动 `export EMAIL_AGENT_ROOT=$(pwd)` |

@@ -27,29 +27,37 @@ for key in ("code", "command", "script", "content", "source", "to", "from", "htm
         parts.extend(str(x) for x in val)
 blob = "\n".join(parts).lower()
 
-# 1) Block SMTP / smtplib
+# 1) Block improvised SMTP / smtplib — allow approved connectors only
 smtp_hit = bool(re.search(
     r"(smtplib|smtp\.|smtp\(|starttls|email\.mime|"
     r"smtp\.example\.com|mail\.smtp)",
     blob,
 ))
-if tool in {"execute_code", "terminal", "run_terminal_cmd", "bash"} and smtp_hit:
+approved = ("user_smtp.py" in blob) or ("send_mail.py" in blob) or ("connectors/user_smtp" in blob) or ("connectors/send_mail" in blob)
+if tool in {"execute_code", "terminal", "run_terminal_cmd", "bash"} and smtp_hit and not approved:
     print(json.dumps({
         "decision": "block",
         "reason": (
             "Blocked: raw SMTP/smtplib is forbidden. "
-            "Use python3 scripts/connectors/resend.py send|seed "
-            "(source .hermes/.env; --live only after EQS SHIP). "
-            "Verified domain: mail.vidau.ai."
+            "Use python3 \"$EMAIL_AGENT_ROOT/scripts/connectors/send_mail.py\" send|seed "
+            "(auto: VidAU Messaging Email SMTP if configured, else Resend). "
+            "Dry-run first; --live only after EQS SHIP."
         ),
     }, ensure_ascii=False))
     raise SystemExit(0)
 
-# 2) Block Resend MCP / CLI sends to placeholders or unverified root domain
+# 2) Block MCP / CLI sends to placeholders or unverified Resend root domain
 is_send = (
     "send_email" in tool
     or "resend_send" in tool
-    or (tool in {"terminal", "execute_code", "bash"} and "resend.py" in blob and " send" in f" {blob}")
+    or (
+        tool in {"terminal", "execute_code", "bash", "run_terminal_cmd"}
+        and (
+            ("resend.py" in blob and " send" in f" {blob}")
+            or ("send_mail.py" in blob and (" send" in f" {blob}" or " seed" in f" {blob}"))
+            or ("user_smtp.py" in blob and (" send" in f" {blob}" or " seed" in f" {blob}"))
+        )
+    )
 )
 
 def recipients():
@@ -80,23 +88,25 @@ if is_send:
         }, ensure_ascii=False))
         raise SystemExit(0)
 
-    # from must not be bare @vidau.ai (unverified); require mail.vidau.ai
-    froms = []
-    for key in ("from", "sender", "from_email"):
-        val = inp.get(key)
-        if isinstance(val, str):
-            froms.append(val.lower())
-    froms += re.findall(r"from[\"\s:=]+([\w.+-]+@[\w.-]+)", blob)
-    for f in froms:
-        if f.endswith("@vidau.ai") and not f.endswith("@mail.vidau.ai"):
-            print(json.dumps({
-                "decision": "block",
-                "reason": (
-                    "Blocked: from-domain vidau.ai is not verified on Resend. "
-                    "Use an address on mail.vidau.ai (e.g. noreply@mail.vidau.ai)."
-                ),
-            }, ensure_ascii=False))
-            raise SystemExit(0)
+    # from must not be bare @vidau.ai when using Resend; user SMTP may use personal Gmail
+    if "resend.py" in blob or "transport resend" in blob or "--transport resend" in blob:
+        froms = []
+        for key in ("from", "sender", "from_email"):
+            val = inp.get(key)
+            if isinstance(val, str):
+                froms.append(val.lower())
+        froms += re.findall(r"from[\"\s:=]+([\w.+-]+@[\w.-]+)", blob)
+        for f in froms:
+            if f.endswith("@vidau.ai") and not f.endswith("@mail.vidau.ai"):
+                print(json.dumps({
+                    "decision": "block",
+                    "reason": (
+                        "Blocked: from-domain vidau.ai is not verified on Resend. "
+                        "Use mail.vidau.ai, or send via user SMTP "
+                        "(send_mail.py / user_smtp.py with Messaging Email)."
+                    ),
+                }, ensure_ascii=False))
+                raise SystemExit(0)
 
 print("{}")
 ' "$payload"

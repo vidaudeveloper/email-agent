@@ -1,6 +1,6 @@
 # Email Agent · SEND 邮件营销（Hermes Skills）
 
-Aaron SEND 16 + 跨学科依赖，面向 **Hermes Agent**。真发走 `scripts/connectors/resend.py`（默认 dry-run）。
+Aaron SEND 16 + 跨学科依赖，面向 **Hermes Agent**。真发走 `scripts/connectors/send_mail.py`（默认 dry-run）：**优先个人 Messaging Email SMTP**，否则 Resend。
 
 仓库：https://github.com/vidaudeveloper/email-agent
 
@@ -15,7 +15,9 @@ node scripts/install-skills.mjs --force
 
 # 独立 Hermes 环境（推荐发信）
 bash hermes/install.sh
-# 编辑 .hermes/.env → VIDAU_API_KEY + RESEND_API_KEY
+# 编辑 .hermes/.env → VIDAU_API_KEY
+# 个人邮箱：桌面 Messaging → Email 已配置即可（自动读 vidau/.env）
+# 或设 RESEND_API_KEY 作为兜底
 
 bash hermes/run.sh chat
 ```
@@ -42,15 +44,15 @@ bash hermes/run.sh chat
 export EMAIL_AGENT_ROOT="$(pwd)"
 set -a && source .hermes/.env && set +a
 
-python3 "$EMAIL_AGENT_ROOT/scripts/connectors/resend.py" send \
-  --from "you@mail.vidau.ai" \
+python3 "$EMAIL_AGENT_ROOT/scripts/connectors/send_mail.py" status
+python3 "$EMAIL_AGENT_ROOT/scripts/connectors/send_mail.py" send \
   --to "real@recipient.com" \
   --subject "…" \
   --html build.html
 # add --live only after EQS SHIP + consent
 ```
 
-Do **not** use SMTP / `smtplib` / placeholder `@example.com` recipients.
+Do **not** improvise raw SMTP / `smtplib` / placeholder `@example.com` recipients — only `send_mail.py` / `user_smtp.py` / `resend.py`.
 
 ## Docs
 
@@ -62,5 +64,6 @@ Do **not** use SMTP / `smtplib` / placeholder `@example.com` recipients.
 ## Verify
 
 ```bash
+python3 scripts/connectors/send_mail.py status
 bash scripts/verify-deliver-flow.sh --domain mail.vidau.ai
 ```

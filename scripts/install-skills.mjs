@@ -151,7 +151,7 @@ async function main() {
   }
   console.info("[skills:install] all skills installed");
   console.info(
-    "[skills:install] send path: python3 \"$EMAIL_AGENT_ROOT/scripts/connectors/resend.py\" …",
+    "[skills:install] send path: python3 \"$EMAIL_AGENT_ROOT/scripts/connectors/send_mail.py\" … (SMTP first, else Resend)",
   );
   console.info(
     "[skills:install] prefer isolated runtime: bash hermes/install.sh && bash hermes/run.sh chat",
