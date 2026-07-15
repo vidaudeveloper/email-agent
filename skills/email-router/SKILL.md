@@ -6,23 +6,24 @@ summary: "SEND 循环路由/邮件营销入口"
 description: 'Routes email marketing requests through the SEND loop (setup/engage/nurture/deliver). Use when the user mentions email marketing, ESP campaigns, newsletter, cold outbound, deliverability, DMARC, list hygiene, pre-send go/no-go, EQS audit, writing promotional copy/templates (生成推广/写邮件), sending a template to an address, seed/test send, 发送模版, or 发给收件人. Delegates to phase skills; never uses raw SMTP; does not auto-send on generate-only requests.'
 version: "1.3.0"
 license: Apache-2.0
-compatibility: "Hermes Agent (use email_demo/.hermes via hermes/run.sh)"
+compatibility: "Hermes Agent (use repo .hermes via hermes/run.sh; exports EMAIL_AGENT_ROOT)"
 when_to_use: "User asks about email campaigns, deliverability, list building, lifecycle flows, pre-send audit, writing promo/ad email copy (生成广告推广/营销模版), or wants to send/seed a template to a recipient — without naming a specific phase skill."
 argument-hint: "[phase: setup|engage|nurture|deliver] [goal: promotional|retention|cold-outbound]"
-metadata: {"author": "email-demo", "version": "1.3.0", "discipline": "email", "phase": "router", "hermes": {"tags": ["marketing", "email", "send", "router"], "category": "email"}}
+metadata: {"author": "vidau-email-agent", "version": "1.3.1", "discipline": "email", "phase": "router", "hermes": {"tags": ["marketing", "email", "send", "router"], "category": "email"}}
 ---
 
 # Email Router
 
-Entry skill for the **SEND** email marketing loop in `email_demo`. Infer the user's phase and delegate to the matching skill. Default to Tier 1 (paste exports) unless MCP is configured.
+Entry skill for the **SEND** email marketing loop in this repo (`vidaudeveloper/email-agent`). Infer the user's phase and delegate to the matching skill. Default to Tier 1 (paste exports) unless MCP is configured.
 
 Equivalent to upstream `/aaron-marketing:email`.
 
 ## Project paths
 
-- **Project root**: `email_demo/` (use `bash hermes/run.sh chat` so `HERMES_HOME=.hermes`)
+- **Project root**: clone of this repo; start with `bash hermes/run.sh chat` (`HERMES_HOME=$EMAIL_AGENT_ROOT/.hermes`, `EMAIL_AGENT_ROOT` exported automatically)
 - **References**: `references/send-benchmark.md`, `references/auditor-runbook.md`
-- **Connectors**: `python3 scripts/connectors/doh.py auth <domain>` (keyless S1)
+- **Connectors**: `python3 "$EMAIL_AGENT_ROOT/scripts/connectors/doh.py" auth <domain>` (keyless S1)
+- **Send executor**: `python3 "$EMAIL_AGENT_ROOT/scripts/connectors/resend.py" send|seed …`
 - **Memory**: `memory/consent/`, `memory/claims/`, `memory/audits/email/`
 
 ## Routing table (SEND 16)
@@ -81,7 +82,7 @@ If phase is ambiguous, ask once for **goal** (promotional / retention / cold-out
 ## Data tiers
 
 1. **Tier 1** (default): pasted ESP/DMARC/GA4 exports + `doh.py auth`
-2. **Tier 2**: Resend MCP / `resend.py` when `RESEND_API_KEY` is set in `email_demo/.hermes/.env`
+2. **Tier 2**: Resend MCP / `resend.py` when `RESEND_API_KEY` is set in `.hermes/.env`
 3. **Tier 3**: multi-MCP orchestration
 
 ## Generate vs send (hard rules)
@@ -94,7 +95,7 @@ If phase is ambiguous, ask once for **goal** (promotional / retention / cold-out
 - **Never** use `smtplib`, raw SMTP, `himalaya`, or `execute_code` to send mail.
 - **Never** send to placeholder addresses (`*@example.com`, `recipient@…` fakes).
 - From-address domain must be **verified**: `mail.vidau.ai` (not bare `vidau.ai`).
-- Delivery executor: `python3 scripts/connectors/resend.py send|seed` (source `.hermes/.env` first). Prefer CLI over MCP when both exist.
+- Delivery executor: `python3 "$EMAIL_AGENT_ROOT/scripts/connectors/resend.py" send|seed` (source `.hermes/.env` first; `hermes/run.sh` exports `EMAIL_AGENT_ROOT`). Prefer CLI over MCP when both exist.
 - Mutating calls are dry-run by default; add `--live` only after `email-quality-auditor` returns **SHIP**.
 - Confirm consent in `memory/consent/` before `--live`.
 - Do **not** reuse unrelated session examples (e.g. 夏季清仓 8 折) when the user asked for a different product (e.g. Mete 智能投放).

@@ -5,9 +5,10 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 HERMES_DIR="$ROOT/.hermes"
 
-echo "==> email_demo Hermes setup (isolated)"
+echo "==> email-agent Hermes setup (isolated)"
 echo "    Project:     $ROOT"
 echo "    HERMES_HOME: $HERMES_DIR"
+echo "    EMAIL_AGENT_ROOT will be exported by hermes/run.sh"
 
 if [[ ! -d "$ROOT/skills/engage/email-creative-builder" ]]; then
   echo "    Syncing SEND skills from upstream..."

@@ -17,7 +17,7 @@
 ## 一键自动检查（推荐先做）
 
 ```bash
-cd /Users/kean/Desktop/DemoFile/email_demo
+cd $EMAIL_AGENT_ROOT
 bash scripts/verify-deliver-flow.sh --domain yourdomain.com
 ```
 

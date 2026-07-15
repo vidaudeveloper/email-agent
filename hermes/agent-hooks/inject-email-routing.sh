@@ -51,14 +51,16 @@ User asked to SEND. You MUST:
 1. skill_view("email-router") then confirm consent in memory/consent/.
 2. Use ONLY the recipient address the user gave — never *@example.com placeholders.
 3. From address must use verified domain mail.vidau.ai (not bare vidau.ai).
-4. Prefer: python3 scripts/connectors/resend.py send|seed (source .hermes/.env). Dry-run first; --live only after EQS SHIP.
+4. Prefer: python3 \"$EMAIL_AGENT_ROOT/scripts/connectors/resend.py\" send|seed (source .hermes/.env). Dry-run first; --live only after EQS SHIP.
 5. NEVER smtplib / raw SMTP / himalaya / execute_code mail hacks.
-6. Creative must match the product the user named this turn — not a stale session promo."""
+6. Creative must match the product the user named this turn — not a stale session promo.
+7. EMAIL_AGENT_ROOT must be set (hermes/run.sh exports it)."""
 else:
     ctx = """[email_demo routing]
 Email-related request. Load skill_view("email-router").
 Generate-only → email-creative-builder, no send.
-Send only when user gives a real recipient. Domain: mail.vidau.ai. No SMTP."""
+Send only when user gives a real recipient. Domain: mail.vidau.ai. No SMTP.
+Use python3 \"$EMAIL_AGENT_ROOT/scripts/connectors/resend.py\" for delivery."""
 
 print(json.dumps({"context": ctx}, ensure_ascii=False))
 ' "$msg"

@@ -64,10 +64,21 @@ def copy_tree(src: Path, dst: Path) -> None:
 
 
 def apply_common_substitutions(text: str) -> str:
-    text = text.replace("${CLAUDE_PLUGIN_ROOT}", str(ROOT))
+    # Portable root for connectors — hermes/run.sh exports EMAIL_AGENT_ROOT.
+    text = text.replace("${CLAUDE_PLUGIN_ROOT}", "${EMAIL_AGENT_ROOT}")
     text = re.sub(
-        r'python3 "/Users/kean/Desktop/DemoFile/email_demo/',
-        f'python3 "{ROOT}/',
+        r'python3\s+"/Users/kean/Desktop/DemoFile/email_demo/',
+        'python3 "$EMAIL_AGENT_ROOT/',
+        text,
+    )
+    text = text.replace(
+        "/Users/kean/Desktop/DemoFile/email_demo",
+        "$EMAIL_AGENT_ROOT",
+    )
+    # If a previous sync baked an absolute machine path, normalize it.
+    text = re.sub(
+        r'python3\s+"[^"\n]+[/\\](?:email-agent(?:-gh)?|email_demo)[/\\]',
+        'python3 "$EMAIL_AGENT_ROOT/',
         text,
     )
     return text

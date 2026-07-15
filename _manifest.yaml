@@ -1,0 +1,57 @@
+# VidAU Email Agent skill manifest (Hermes)
+# Do not hardcode skill names in install docs — read this file.
+name: vidau-email-agent
+repo: vidaudeveloper/email-agent
+branch: main
+category: vidau-email
+skills:
+  - id: email-router
+    path: skills/email-router
+  - id: deliverability-qa
+    path: skills/setup/deliverability-qa
+  - id: list-segment-builder
+    path: skills/setup/list-segment-builder
+  - id: list-growth-designer
+    path: skills/setup/list-growth-designer
+  - id: list-hygiene-monitor
+    path: skills/setup/list-hygiene-monitor
+  - id: email-creative-builder
+    path: skills/engage/email-creative-builder
+  - id: subject-line-lab
+    path: skills/engage/subject-line-lab
+  - id: email-render-builder
+    path: skills/engage/email-render-builder
+  - id: dynamic-content-personalizer
+    path: skills/engage/dynamic-content-personalizer
+  - id: email-sequence-designer
+    path: skills/nurture/email-sequence-designer
+  - id: newsletter-monetization-planner
+    path: skills/nurture/newsletter-monetization-planner
+  - id: preference-frequency-manager
+    path: skills/nurture/preference-frequency-manager
+  - id: reactivation-specialist
+    path: skills/nurture/reactivation-specialist
+  - id: email-quality-auditor
+    path: skills/deliver/email-quality-auditor
+  - id: send-experiment-designer
+    path: skills/deliver/send-experiment-designer
+  - id: inbox-placement-monitor
+    path: skills/deliver/inbox-placement-monitor
+  - id: cold-outbound-sequencer
+    path: skills/deliver/cold-outbound-sequencer
+  - id: consent-registry
+    path: skills/protocol/consent-registry
+  - id: offer-claims-registry
+    path: skills/protocol/offer-claims-registry
+  - id: memory-management
+    path: skills/protocol/memory-management
+  - id: audience-mapper
+    path: skills/cross-discipline/influencer/discover/audience-mapper
+  - id: landing-optimizer
+    path: skills/cross-discipline/influencer/measure/landing-optimizer
+  - id: roi-calculator
+    path: skills/cross-discipline/influencer/measure/roi-calculator
+  - id: performance-analyzer
+    path: skills/cross-discipline/influencer/measure/performance-analyzer
+  - id: report-generator
+    path: skills/cross-discipline/influencer/measure/report-generator

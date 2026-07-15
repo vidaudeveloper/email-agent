@@ -1,61 +1,51 @@
-# AGENTS.md — email_demo
+# AGENTS.md — vidaudeveloper/email-agent
 
 ## Project
 
-- **Root**: `/Users/kean/Desktop/DemoFile/email_demo`
-- **Runtime**: Hermes Agent via `HERMES_HOME=email_demo/.hermes`
+- **Root**: this repository (clone path = `$EMAIL_AGENT_ROOT`)
+- **Runtime**: Hermes Agent via `HERMES_HOME=$EMAIL_AGENT_ROOT/.hermes`
 - **LLM**: Vidau OPEN (`https://open.vidau.ai/v1`)
-- **Framework**: Aaron SEND 16 + cross-discipline deps
+- **ESP**: Resend via `scripts/connectors/resend.py` (dry-run default)
 
 ## Start
 
 ```bash
-python3 scripts/sync-send-skills.py
+python3 scripts/sync-send-skills.py   # optional upstream refresh
 bash hermes/install.sh
+# edit .hermes/.env → VIDAU_API_KEY + RESEND_API_KEY
 bash hermes/run.sh chat
 ```
 
-## Skills (25 + router = 26 SKILL.md)
+`hermes/run.sh` exports `EMAIL_AGENT_ROOT` and `HERMES_HOME`. Skills must call connectors as:
 
-- **Router**: `email-router`
-- **SEND 16**: under `skills/setup|engage|nurture|deliver/`
-- **Protocol**: `consent-registry`, `offer-claims-registry`, `memory-management`
-- **Cross-discipline**: `audience-mapper`, `landing-optimizer`, `roi-calculator`, `performance-analyzer`, `report-generator` under `skills/cross-discipline/influencer/`
+```bash
+python3 "$EMAIL_AGENT_ROOT/scripts/connectors/resend.py" …
+```
 
-## Natural-language routing
+## Skills
 
-Hermes NL does **not** hard-inject skills (only `/slash` does). This project compensates via:
+See `_manifest.yaml` (25 + router). Install: `node scripts/install-skills.mjs --force`.
 
-- `hermes/run.sh chat` preloads `--skills email-router`
-- hooks: inject **generate-only vs explicit-send** context; block SMTP + placeholder recipients + unverified `@vidau.ai` from-domain
-- Prefer slash commands when possible
-- **生成 ≠ 发送**: “生成广告推广” → draft only; “发送给 xubin@…” → consent → EQS → `resend.py`
-- Do **not** use `himalaya`, `smtplib`, or invent `recipient@example.com`
+## Send workflow
 
-## Send workflow (template → inbox)
-
-SEND skills plan and audit; they do not improvise SMTP. Delivery path:
-
-1. `consent-registry` — recipient must be opted-in (`memory/consent/`)
-2. `email-quality-auditor` — need **SHIP** (not FIX/BLOCK)
-3. `scripts/connectors/resend.py send|seed` — dry-run first; `--live` only after SHIP
+1. `consent-registry` → recipient opted-in (`memory/consent/`)
+2. `email-quality-auditor` → **SHIP**
+3. `resend.py send|seed` → dry-run first; `--live` only after SHIP
 
 ```bash
 set -a && source .hermes/.env && set +a
-python3 scripts/connectors/resend.py send \
-  --from "you@verified-domain.com" \
-  --to "recipient@example.com" \
+export EMAIL_AGENT_ROOT="$(pwd)"
+python3 "$EMAIL_AGENT_ROOT/scripts/connectors/resend.py" send \
+  --from "you@mail.vidau.ai" \
+  --to "recipient@real-domain.com" \
   --subject "…" \
   --html path/to/build.html
 # add --live only after SHIP
 ```
 
-Enable Resend MCP (optional): `bash hermes/enable-resend.sh` then `/reload-mcp` in chat.
+Do **not** use `himalaya`, `smtplib`, or invent `recipient@example.com`.
 
-## Memory
+## Memory / Connectors
 
-`memory/consent/`, `memory/claims/`, `memory/audits/email/`, `memory/archive/`, `memory/hot-cache.md`, `memory/open-loops.md`
-
-## Connectors
-
-`scripts/connectors/doh.py`, `resend.py`, `ledger.py`, `experiment.py`
+- Memory: `memory/consent/`, `memory/claims/`, `memory/audits/email/`
+- Connectors: `scripts/connectors/{doh,resend,ledger,experiment}.py`

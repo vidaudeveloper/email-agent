@@ -4,6 +4,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export HERMES_HOME="$ROOT/.hermes"
+export EMAIL_AGENT_ROOT="$ROOT"
 
 if [[ ! -f "$HERMES_HOME/config.yaml" ]]; then
   echo "Missing $HERMES_HOME/config.yaml — run: bash hermes/install.sh" >&2

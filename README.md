@@ -1,76 +1,66 @@
-# Email Demo — SEND 邮件营销（Hermes 独立运行）
+# Email Agent · SEND 邮件营销（Hermes Skills）
 
-Full [Aaron SEND 16](https://github.com/aaron-he-zhu/aaron-marketing-skills/blob/main/docs/README.zh.md#邮件营销--send16) plus cross-discipline dependencies for **Hermes Agent**, isolated in `email_demo/.hermes/`.
+Aaron SEND 16 + 跨学科依赖，面向 **Hermes Agent**。真发走 `scripts/connectors/resend.py`（默认 dry-run）。
+
+仓库：https://github.com/vidaudeveloper/email-agent
 
 ## Quick start
 
 ```bash
-cd /Users/kean/Desktop/DemoFile/email_demo
+git clone --depth 1 https://github.com/vidaudeveloper/email-agent.git
+cd email-agent
 
-# 1. Sync skills from upstream
-python3 scripts/sync-send-skills.py
+# 可选：安装到 ~/.hermes/skills/vidau-email/
+node scripts/install-skills.mjs --force
 
-# 2. Init isolated Hermes env
+# 独立 Hermes 环境（推荐发信）
 bash hermes/install.sh
+# 编辑 .hermes/.env → VIDAU_API_KEY + RESEND_API_KEY
 
-# 3. Edit API key in email_demo/.hermes/.env  (VIDAU_API_KEY=...)
-
-# 4. Run
 bash hermes/run.sh chat
 ```
 
+完整步骤与发信规则见 **[SETUP.md](./SETUP.md)**。
+
 ## Skills
 
-### SEND 16 + router
+清单以 [`_manifest.yaml`](./_manifest.yaml) 为准（安装脚本只读该文件）。
 
-| Phase | Skill | Slash |
-|-------|-------|-------|
-| router | `email-router` | `/email-router` |
-| setup | `deliverability-qa`, `list-segment-builder`, `list-growth-designer`, `list-hygiene-monitor` | same name |
-| engage | `email-creative-builder`, `subject-line-lab`, `email-render-builder`, `dynamic-content-personalizer` | same name |
-| nurture | `email-sequence-designer`, `newsletter-monetization-planner`, `preference-frequency-manager`, `reactivation-specialist` | same name |
-| deliver | `email-quality-auditor`, `send-experiment-designer`, `inbox-placement-monitor`, `cold-outbound-sequencer` | same name |
+| Phase | Skills |
+|-------|--------|
+| router | `email-router` |
+| setup | `deliverability-qa`, `list-segment-builder`, `list-growth-designer`, `list-hygiene-monitor` |
+| engage | `email-creative-builder`, `subject-line-lab`, `email-render-builder`, `dynamic-content-personalizer` |
+| nurture | `email-sequence-designer`, `newsletter-monetization-planner`, `preference-frequency-manager`, `reactivation-specialist` |
+| deliver | `email-quality-auditor`, `send-experiment-designer`, `inbox-placement-monitor`, `cold-outbound-sequencer` |
+| protocol | `consent-registry`, `offer-claims-registry`, `memory-management` |
+| cross | `audience-mapper`, `landing-optimizer`, `roi-calculator`, `performance-analyzer`, `report-generator` |
 
-### Protocol
-
-| Skill | Slash | Purpose |
-|-------|-------|---------|
-| `consent-registry` | `/consent-registry` | Consent SSOT (S2/N1) |
-| `offer-claims-registry` | `/offer-claims-registry` | Claims SSOT (D1) |
-| `memory-management` | `/memory-management` | HOT/WARM/COLD memory |
-
-### Cross-discipline (influencer)
-
-| Skill | Slash | Purpose |
-|-------|-------|---------|
-| `audience-mapper` | `/audience-mapper` | Persona / lifecycle map |
-| `landing-optimizer` | `/landing-optimizer` | Post-click page QA |
-| `roi-calculator` | `/roi-calculator` | ROI / revenue-per-send |
-| `performance-analyzer` | `/performance-analyzer` | Post-send measurement |
-| `report-generator` | `/report-generator` | Report packaging |
-
-## Sync from upstream
+## Send (safe path)
 
 ```bash
-python3 scripts/sync-send-skills.py
+export EMAIL_AGENT_ROOT="$(pwd)"
+set -a && source .hermes/.env && set +a
+
+python3 "$EMAIL_AGENT_ROOT/scripts/connectors/resend.py" send \
+  --from "you@mail.vidau.ai" \
+  --to "real@recipient.com" \
+  --subject "…" \
+  --html build.html
+# add --live only after EQS SHIP + consent
 ```
 
-## Config
-
-| What | Where |
-|------|-------|
-| API Key | `email_demo/.hermes/.env` |
-| Hermes config | `email_demo/.hermes/config.yaml` |
+Do **not** use SMTP / `smtplib` / placeholder `@example.com` recipients.
 
 ## Docs
 
-- [Setup](docs/SETUP.md)
-- [Deliver verification](docs/DELIVER-VERIFICATION.md)
-- [Vidau LLM](docs/VIDAU-LLM-INTEGRATION.md)
-- [Plan](docs/HERMES-EMAIL-MARKETING-PLAN.md)
+- [SETUP.md](./SETUP.md) — one-click install & send
+- [docs/SETUP.md](./docs/SETUP.md) — Hermes 细节
+- [docs/DELIVER-VERIFICATION.md](./docs/DELIVER-VERIFICATION.md)
+- [docs/VIDAU-LLM-INTEGRATION.md](./docs/VIDAU-LLM-INTEGRATION.md)
 
-## Verify Deliver phase
+## Verify
 
 ```bash
-bash scripts/verify-deliver-flow.sh --domain yourdomain.com
+bash scripts/verify-deliver-flow.sh --domain mail.vidau.ai
 ```

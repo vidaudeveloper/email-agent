@@ -279,10 +279,10 @@ hermes skills install skills-sh/aaron-he-zhu/aaron-marketing-skills/consent-regi
 ```yaml
 skills:
   external_dirs:
-    - "/Users/kean/Desktop/DemoFile/email_demo/skills"
+    - "$EMAIL_AGENT_ROOT/skills"
   config:
     email-demo:
-      project_root: "/Users/kean/Desktop/DemoFile/email_demo"
+      project_root: "$EMAIL_AGENT_ROOT"
       default_goal: "promotional"   # promotional | retention | cold-outbound
       esp: "manual"                 # resend | hubspot | manual
 

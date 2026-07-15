@@ -63,7 +63,7 @@ Output: a test-design doc (mode, hypothesis, variant matrix, primary/secondary/g
 
 > See [CONNECTORS.md](../../../CONNECTORS.md) for tool category placeholders. Every input is the user's **own data, manually exported**. Keyed ESP APIs (Klaviyo, Mailchimp, HubSpot, Customer.io) are an optional Tier-2/3 MCP convenience — never required to design a test or read one out.
 
-> **Significance (keyless — closes the design→measure loop):** once the send results are in, `python3 "/Users/kean/Desktop/DemoFile/email_demo/scripts/connectors/experiment.py" proportion --control <opens_or_clicks> <n> --variant <opens_or_clicks> <n> [--min-lift 0.05]` runs a two-proportion z-test + Wilson CIs + a **promote** decision on your own ESP counts (revenue-per-send → `experiment.py continuous`; how many sends each arm needs to detect a lift → `experiment.py samplesize`). Pure stdlib, no key — an A/B or hold-out is read out on evidence rather than a raw open-rate gap.
+> **Significance (keyless — closes the design→measure loop):** once the send results are in, `python3 "$EMAIL_AGENT_ROOT/scripts/connectors/experiment.py" proportion --control <opens_or_clicks> <n> --variant <opens_or_clicks> <n> [--min-lift 0.05]` runs a two-proportion z-test + Wilson CIs + a **promote** decision on your own ESP counts (revenue-per-send → `experiment.py continuous`; how many sends each arm needs to detect a lift → `experiment.py samplesize`). Pure stdlib, no key — an A/B or hold-out is read out on evidence rather than a raw open-rate gap.
 
 | Need | Source export (own data) | Category |
 |------|--------------------------|----------|

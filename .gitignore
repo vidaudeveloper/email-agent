@@ -1,8 +1,11 @@
 # Local Hermes runtime + secrets (do not commit)
 .hermes/
 .env
-.env.*
+.env.local
 *.pem
+# keep templates
+!.env.example
+!hermes/.env.example
 
 # OS / editor
 .DS_Store

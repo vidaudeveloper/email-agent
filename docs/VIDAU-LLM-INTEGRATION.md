@@ -25,7 +25,7 @@
 初始化：
 
 ```bash
-cd /Users/kean/Desktop/DemoFile/email_demo
+cd $EMAIL_AGENT_ROOT
 bash hermes/install.sh
 ```
 
