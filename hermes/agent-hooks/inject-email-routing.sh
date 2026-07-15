@@ -50,17 +50,18 @@ elif send_verbs or has_recipient:
 User asked to SEND. You MUST:
 1. skill_view("email-router") then confirm consent in memory/consent/.
 2. Use ONLY the recipient address the user gave — never *@example.com placeholders.
-3. Prefer personal SMTP when VidAU Messaging Email is configured; otherwise Resend from @mail.vidau.ai.
-4. Prefer: python3 \"$EMAIL_AGENT_ROOT/scripts/connectors/send_mail.py\" send|seed (source .hermes/.env). Dry-run first; --live only after EQS SHIP.
-5. NEVER improvise raw smtplib / himalaya / execute_code mail hacks — only send_mail.py / user_smtp.py / resend.py.
-6. Creative must match the product the user named this turn — not a stale session promo.
-7. EMAIL_AGENT_ROOT must be set (hermes/run.sh exports it)."""
+3. FIRST run: python3 \"$EMAIL_AGENT_ROOT/scripts/connectors/send_mail.py\" status
+4. If needs_setup / smtp_configured=false: STOP sending. Tell the user in Chinese to open VidAU → Messaging → Email, fill mailbox + SMTP/IMAP + password (Gmail=App Password), Save, then retry. Do NOT ask them for a Resend API key unless they explicitly want Resend.
+5. If smtp ready: send_mail.py send|seed — dry-run first; --live only after EQS SHIP.
+6. NEVER improvise raw smtplib / himalaya / execute_code mail hacks — only send_mail.py / user_smtp.py / resend.py.
+7. Creative must match the product the user named this turn — not a stale session promo.
+8. EMAIL_AGENT_ROOT must be set (hermes/run.sh exports it)."""
 else:
     ctx = """[email_demo routing]
 Email-related request. Load skill_view("email-router").
 Generate-only → email-creative-builder, no send.
 Send only when user gives a real recipient.
-Delivery: python3 \"$EMAIL_AGENT_ROOT/scripts/connectors/send_mail.py\" (SMTP from Messaging Email first, else Resend)."""
+Before send: send_mail.py status — if personal email missing, prompt VidAU → Messaging → Email setup."""
 
 print(json.dumps({"context": ctx}, ensure_ascii=False))
 ' "$msg"

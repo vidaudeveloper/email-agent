@@ -25,6 +25,19 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
 
+# Shown to agents/users when Messaging Email is missing.
+SETUP_PROMPT_ZH = (
+    "尚未配置个人邮箱，无法用你的账号发信。"
+    "请打开 VidAU 桌面端 → Messaging → Email，填写邮箱 / SMTP（或 IMAP）/ 密码（Gmail 请用应用专用密码），"
+    "点击保存后再重试。也可在 .hermes/.env 中设置 EMAIL_ADDRESS、EMAIL_PASSWORD、EMAIL_SMTP_HOST。"
+)
+SETUP_PROMPT_EN = (
+    "Personal Messaging Email is not configured. "
+    "Open VidAU desktop → Messaging → Email, fill address / SMTP (or IMAP) / password "
+    "(Gmail: App Password), Save, then retry. "
+    "Or set EMAIL_ADDRESS, EMAIL_PASSWORD, EMAIL_SMTP_HOST in .hermes/.env."
+)
+
 
 def _candidate_env_files() -> list[Path]:
     home = Path.home()
@@ -183,7 +196,7 @@ def smtp_send(cfg: dict, msg: MIMEMultipart, recipients: list[str]) -> dict:
 
 def cmd_status(_args) -> int:
     cfg = load_email_config()
-    print(json.dumps({
+    payload = {
         "configured": cfg["configured"],
         "address": cfg["address"],
         "password_set": cfg["password_set"],
@@ -194,11 +207,17 @@ def cmd_status(_args) -> int:
         "sources": cfg["sources"],
         "hint": (
             "Ready — use: python3 user_smtp.py send --to … --subject … --html … [--live]"
-            if cfg["configured"] else
-            "Not configured. Open VidAU → Messaging → Email and Save, "
-            "or set EMAIL_ADDRESS / EMAIL_PASSWORD / EMAIL_SMTP_HOST."
+            if cfg["configured"] else SETUP_PROMPT_EN
         ),
-    }, ensure_ascii=False, indent=2))
+    }
+    if not cfg["configured"]:
+        payload["needs_setup"] = True
+        payload["user_message_zh"] = SETUP_PROMPT_ZH
+        payload["action_for_agent"] = (
+            "Stop sending. Tell the user (in Chinese) to configure personal email "
+            "via VidAU → Messaging → Email, then re-run status."
+        )
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0 if cfg["configured"] else 2
 
 
@@ -211,8 +230,15 @@ def cmd_send(args) -> int:
     if not cfg["configured"]:
         print(json.dumps({
             "ok": False,
-            "error": "user SMTP not configured (EMAIL_ADDRESS / EMAIL_PASSWORD / EMAIL_SMTP_HOST)",
-        }, ensure_ascii=False))
+            "needs_setup": True,
+            "error": "personal_email_not_configured",
+            "user_message_zh": SETUP_PROMPT_ZH,
+            "hint": SETUP_PROMPT_EN,
+            "action_for_agent": (
+                "Do not retry send. Prompt the user to open VidAU → Messaging → Email "
+                "and Save their mailbox, then retry."
+            ),
+        }, ensure_ascii=False, indent=2))
         return 2
     if not to_list:
         print(json.dumps({"ok": False, "error": "missing --to"}, ensure_ascii=False))
@@ -256,7 +282,15 @@ def cmd_seed(args) -> int:
     """One message per recipient (same as send loop)."""
     cfg = load_email_config()
     if not cfg["configured"]:
-        print(json.dumps({"ok": False, "error": "user SMTP not configured"}, ensure_ascii=False))
+        print(json.dumps({
+            "ok": False,
+            "needs_setup": True,
+            "error": "personal_email_not_configured",
+            "user_message_zh": SETUP_PROMPT_ZH,
+            "action_for_agent": (
+                "Do not retry send. Prompt the user to configure VidAU → Messaging → Email."
+            ),
+        }, ensure_ascii=False, indent=2))
         return 2
     recipients = _split_addrs(args.to)
     html = _read_body(args.html)

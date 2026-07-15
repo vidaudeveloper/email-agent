@@ -1,6 +1,6 @@
 # Email Agent · SEND 邮件营销（Hermes Skills）
 
-Aaron SEND 16 + 跨学科依赖，面向 **Hermes Agent**。真发走 `scripts/connectors/send_mail.py`（默认 dry-run）：**优先个人 Messaging Email SMTP**，否则 Resend。
+Aaron SEND 16 + 跨学科依赖，面向 **Hermes Agent**。真发走 `scripts/connectors/send_mail.py`（默认 dry-run）：需已配置 **Messaging Email**；未配置时会提示用户去桌面配置。
 
 仓库：https://github.com/vidaudeveloper/email-agent
 

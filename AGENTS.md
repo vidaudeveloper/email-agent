@@ -5,7 +5,7 @@
 - **Root**: this repository (clone path = `$EMAIL_AGENT_ROOT`)
 - **Runtime**: Hermes Agent via `HERMES_HOME=$EMAIL_AGENT_ROOT/.hermes`
 - **LLM**: Vidau OPEN (`https://open.vidau.ai/v1`)
-- **Delivery**: `scripts/connectors/send_mail.py` — prefers VidAU Messaging Email SMTP, else Resend (dry-run default)
+- **Delivery**: `scripts/connectors/send_mail.py` — VidAU Messaging Email SMTP; if missing, prompt user to configure (Resend only via `--transport resend`)
 
 ## Start
 

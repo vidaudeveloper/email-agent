@@ -5,8 +5,8 @@
 
 发信优先级：
 
-1. **VidAU Messaging Email（个人 SMTP）** — 桌面已配置则直接用，无需 Resend
-2. **Resend** — 未配置个人邮箱时用 `RESEND_API_KEY` + 已验证域（如 `mail.vidau.ai`）
+1. **VidAU Messaging Email（个人 SMTP）** — 必须先配置；未配置时 skill / `send_mail.py` 会提示去桌面 Messaging → Email 填写并保存
+2. **Resend（可选）** — 仅当用户明确要求时用 `--transport resend` + `RESEND_API_KEY`
 
 > 不要用 `raw.githubusercontent.com` 拉 skill（易 429）。优先 shallow clone + 本地安装。
 
@@ -170,7 +170,7 @@ bash scripts/verify-deliver-flow.sh --domain mail.vidau.ai
 | 现象 | 处理 |
 |------|------|
 | skill 里路径指向 `/Users/kean/...` | 更新到最新 `main`；或跑 `python3 scripts/fix-skill-paths.py` |
-| `preferred: none` | 在 VidAU → Messaging → Email 保存，或设 `RESEND_API_KEY` |
+| `preferred: none` / `needs_setup` | 按提示打开 VidAU → Messaging → Email 配置个人邮箱并保存后重试 |
 | `RESEND_API_KEY` 未设置且无 SMTP | 二选一配置后重启 `run.sh` |
 | dry-run 正常但 SMTP `--live` 失败 | 检查应用专用密码 / SMTP 主机端口；Gmail 需开启 2FA + App Password |
 | dry-run 正常但 Resend `--live` 失败 | 检查发件域是否已 verified；看 `resend.py domains` |
